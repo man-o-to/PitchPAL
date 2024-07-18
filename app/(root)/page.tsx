@@ -1,11 +1,21 @@
+"use client";
 import React from 'react'
 import { Button } from "@/components/ui/button"
 import { SettingsIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+
 
 export default function Home() {
+  // const tasks = useQuery(api.tasks.get);
   return (
     <div className="flex flex-col h-screen">
+      
+      {/* <div className="flex min-h-screen flex-col items-center justify-between p-24">
+        {tasks?.map(({ _id, text }) => <div key={_id}>{text}</div>)}
+      </div> */}
+
       {/* # voice circle */}
       <div className="flex-1 flex items-center justify-center">
         <div className="bg-white rounded-full w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] shadow-lg" />
