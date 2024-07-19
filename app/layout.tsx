@@ -4,7 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider"
-import { ConvexClientProvider } from "./providers/ConvexProvider";
+import ConvexClerkProvider from "./providers/ConvexClerkProvider";
 
 export const metadata: Metadata = {
   title: "Pitch-Pal",
@@ -25,9 +25,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ConvexClientProvider>
+          <ConvexClerkProvider>
             {children}
-          </ConvexClientProvider>
+          </ConvexClerkProvider>
         </ThemeProvider>
       </body>
     </html>

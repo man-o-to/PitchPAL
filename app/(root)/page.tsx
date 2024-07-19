@@ -38,7 +38,7 @@ export default function Home() {
         </Button>
       </div>
       
-      {/* # settings icon */}
+      {/* # avatar icon */}
       <div className="absolute top-6 right-6">
         <Avatar className="w-8 h-8 border">
           <AvatarImage src="/placeholder-user.jpg" />
