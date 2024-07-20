@@ -1,3 +1,4 @@
+import { ProfileDropdown } from "@/components/profile-dropdown";
 import { SidebarDesktop } from "@/components/sidebar-dt";
 
 export default function RootLayout({
@@ -8,6 +9,7 @@ export default function RootLayout({
   return (
     <div>
       <SidebarDesktop />
+      <ProfileDropdown />
       <main>
           {children}
       </main>
