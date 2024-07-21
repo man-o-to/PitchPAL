@@ -31,7 +31,7 @@ import {
   } from "@/components/ui/avatar"
 import { Button } from "./ui/button";
 
-  
+
 export function ProfileDropdown() {
     const { isSignedIn } = useUser(); // Check if the user is signed in
 

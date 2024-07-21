@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 export default function Home() {
   // const tasks = useQuery(api.tasks.get);
   return (
-    <div className="flex flex-col items-center justify-between h-screen">
-      <div className="flex items-center justify-center flex-1">
-        <div className="w-64 h-64 bg-white rounded-full" />
+    <div className="flex flex-col items-center justify-between h-screen bg-background">
+      <div className="flex items-center justify-center flex-1 bg-background">
+        <div className="w-64 h-64 bg-foreground rounded-full" />
       </div>
       <div className="flex items-center justify-center w-full px-8 pb-8">
         <Button>

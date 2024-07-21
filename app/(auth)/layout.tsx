@@ -6,8 +6,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="flex items-center justify-center min-h-screen">
-      {children}
-    </main>
+    <div>
+      <main className="flex items-center justify-center min-h-screen">
+        {children}
+      </main>
+    </div>
   );
 }

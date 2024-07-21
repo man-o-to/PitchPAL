@@ -1,7 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, query } from "./_generated/server";
 
-// Query to get user by Clerk ID
+// Query to get a user by their Clerk ID
 export const getUserById = query({
   args: { clerkId: v.string() },
   handler: async (ctx, args) => {
@@ -24,6 +24,7 @@ export const createUser = internalMutation({
     clerkId: v.string(),
     email: v.string(),
     name: v.string(),
+    avatarUrl: v.optional(v.string()), // Add avatar URL field
     createdAt: v.number(),
   },
   handler: async (ctx, args) => {
@@ -31,17 +32,18 @@ export const createUser = internalMutation({
       clerkId: args.clerkId,
       email: args.email,
       name: args.name,
-      createdAt: args.createdAt,
+      avatarUrl: args.avatarUrl,
+      createdAt: args.createdAt
     });
-  },
+  }
 });
 
 // Mutation to update user details
 export const updateUser = internalMutation({
   args: {
     clerkId: v.string(),
+    avatarUrl: v.optional(v.string()), // Optional field for avatar URL
     email: v.string(),
-    name: v.string(),
   },
   async handler(ctx, args) {
     const user = await ctx.db
@@ -54,8 +56,8 @@ export const updateUser = internalMutation({
     }
 
     await ctx.db.patch(user._id, {
+      avatarUrl: args.avatarUrl,
       email: args.email,
-      name: args.name,
     });
   },
 });

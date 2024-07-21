@@ -7,6 +7,7 @@ export default defineSchema({
     name: v.string(),
     email: v.string(),
     createdAt: v.number(), // Timestamp
+    avatarUrl: v.optional(v.string()),
   }),
   conversations: defineTable({
     userId: v.id('users'), // Reference to the user
