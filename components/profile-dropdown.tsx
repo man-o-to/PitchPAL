@@ -34,6 +34,7 @@ import { Button } from "./ui/button";
 
 export function ProfileDropdown() {
     const { isSignedIn } = useUser(); // Check if the user is signed in
+    const { user } = useUser();
 
     return (
         <div className="fixed top-6 right-6">
@@ -49,9 +50,9 @@ export function ProfileDropdown() {
             ) : (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                            <AvatarFallback>CN</AvatarFallback>
+                        <Avatar role="button">
+                            <AvatarImage src={user?.imageUrl} alt={user?.imageUrl} />
+                            <AvatarFallback>{user?.firstName}[0]{user?.lastName}[0]</AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
