@@ -21,6 +21,7 @@ export default function RootLayout({
           <div className="flex items-center gap-0 overflow-hidden">
             <div className="flex items-center">
               <SidebarToggle toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
+              <h3 className=""> pitch-pal </h3>
             </div>
           </div>
           <ProfileDropdown />
