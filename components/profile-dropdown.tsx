@@ -37,7 +37,7 @@ export function ProfileDropdown() {
     const { user } = useUser();
 
     return (
-        <div className="fixed top-6 right-6">
+        <div>
             {!isSignedIn ? (
                 <div className="flex gap-2">
                     <Button onClick={() => window.location.href = '/sign-in'}>
@@ -51,7 +51,7 @@ export function ProfileDropdown() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Avatar role="button">
-                            <AvatarImage src={user?.imageUrl} alt={user?.imageUrl} />
+                            <AvatarImage src={user?.imageUrl} alt={user?.imageUrl} width={32} height={32}/>
                             <AvatarFallback>{user?.firstName}[0]{user?.lastName}[0]</AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>

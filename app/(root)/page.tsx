@@ -1,18 +1,14 @@
 "use client";
-import React from 'react'
-import { Button } from "@/components/ui/button"
-
+import React from 'react';
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  // const tasks = useQuery(api.tasks.get);
   return (
-    <div className="flex flex-col items-center justify-between h-screen bg-background">
-      <div className="flex items-center justify-center flex-1 bg-background">
-        <div className="w-64 h-64 bg-foreground rounded-full" />
-      </div>
-      <div className="flex items-center justify-center w-full px-8 pb-8">
+    <div className="flex flex-col items-center justify-center h-screen bg-background">
+      <div className="flex flex-col items-center justify-center flex-1 bg-background">
+        <div className="w-64 h-64 bg-foreground rounded-full mb-24" />
         <Button>
-        <svg
+          <svg
             className="w-6 h-6 mr-2"
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -32,6 +28,5 @@ export default function Home() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
-
