@@ -90,9 +90,12 @@ const schema = z.object({
                       <SelectValue placeholder="Select voice" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="neutral">Neutral</SelectItem>
+                      <SelectItem value="alloy">Alloy</SelectItem>
+                      <SelectItem value="echo">Echo</SelectItem>
+                      <SelectItem value="fable">Fable</SelectItem>
+                      <SelectItem value="onyx">Onyx</SelectItem>
+                      <SelectItem value="nova">Nova</SelectItem>
+                      <SelectItem value="shimmer">Shimmer</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.voice && <p className="text-red-500">{errors.voice.message}</p>}
