@@ -10,29 +10,23 @@ export default defineSchema({
     avatarUrl: v.optional(v.string()),
   }),
   conversations: defineTable({
-    userId: v.id('users'), // Reference to the user
-    scenarioId: v.id('scenarios'), // Reference to the scenario
+    clerkId: v.string(), // Reference to the user’s clerkId
     startedAt: v.number(), // Timestamp
     endedAt: v.number(), // Timestamp
     messages: v.array(v.id('messages')), // Array of message IDs
     progress: v.number(), // Progress towards closing the sale
   }),
-  scenarios: defineTable({
-    name: v.string(),
-    description: v.string(),
-    difficulty: v.number(), // Difficulty level
-    createdAt: v.number(), // Timestamp
-    objections: v.array(v.id('objections')), // Array of objection IDs
-  }),
   objections: defineTable({
     text: v.string(), // Objection text
     correctResponse: v.string(), // Correct response to overcome the objection
-    scenarioId: v.id('scenarios'), // Reference to the scenario
+    difficulty: v.number(), // Difficulty level
   }),
   settings: defineTable({
-    userId: v.id('users'), // Reference to the user
-    scenarioId: v.id('scenarios'), // Reference to the selected scenario
+    clerkId: v.string(), // Reference to the user’s clerkId
+    language: v.string(), // User-selected language
+    voice: v.string(), // User-selected voice of the AI
     difficulty: v.number(), // User-selected difficulty level
+    trainingMode: v.boolean(), // User-selected training mode
     createdAt: v.number(), // Timestamp
   }),
   messages: defineTable({
