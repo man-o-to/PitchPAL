@@ -1,0 +1,1 @@
+// Purpose: Manage logging of user and AI messages.

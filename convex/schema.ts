@@ -18,7 +18,8 @@ export default defineSchema({
   }),
   objections: defineTable({
     text: v.string(), // Objection text
-    correctResponse: v.string(), // Correct response to overcome the objection
+    responses: v.array(v.string()), // Array of responses to overcome the objection
+    hints: v.array(v.string()), // Array of hints for the correct responses
     difficulty: v.number(), // Difficulty level
   }),
   settings: defineTable({
