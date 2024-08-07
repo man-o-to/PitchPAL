@@ -48,6 +48,7 @@ export default function ProfileSettingsDialog({ open, onOpenChange }: { open: bo
           <div className="w-1/4 flex flex-col">
             <SidebarNav
               items={sidebarNavItems}
+              activeTab={activeTab} // Pass the activeTab state
               onClick={(e) => {
                 e.preventDefault();
                 const href = (e.currentTarget as HTMLAnchorElement).getAttribute("href")!;
@@ -59,9 +60,6 @@ export default function ProfileSettingsDialog({ open, onOpenChange }: { open: bo
             {renderSettingsContent()}
           </div>
         </div>
-        <DialogFooter>
-          <Button type="button" onClick={() => onOpenChange(false)}>Close</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
