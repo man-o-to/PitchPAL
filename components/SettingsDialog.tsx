@@ -1,55 +1,91 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
-import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Separator } from "@radix-ui/react-separator"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { toast, useToast } from "@/components/ui/use-toast";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@radix-ui/react-separator";
+import { useMutation } from "convex/react";
+import { useUser } from "@clerk/nextjs";
+import { api } from "@/convex/_generated/api";
 
 // Define the schema for the settings form using Zod
 const settingsFormSchema = z.object({
-  voice: z.enum(["Default", "Voice 1", "Voice 2"], {
-    required_error: "Please select a voice.",
-  }),
-  difficulty: z.number().min(1).max(3, {
-    message: "Difficulty must be between 1 and 3.",
-  }),
+  language: z.string().min(1, "Language is required"),
+  voice: z.string().min(1, "Voice is required"),
+  difficulty: z.coerce.number().min(1).max(3),
   trainingMode: z.boolean(),
-})
+});
 
-type SettingsFormValues = z.infer<typeof settingsFormSchema>
+type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
-// Default values for the form
-const defaultValues: Partial<SettingsFormValues> = {
-  voice: "Default",
-  difficulty: 2, // Default difficulty
-  trainingMode: false,
+interface SettingsDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
+  const { user } = useUser();
+  const { toast } = useToast();
+
+  const updateSettings = useMutation(api.settings.updateSettings);
+
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
-    defaultValues,
-  })
+    defaultValues: {
+      language: '',
+      voice: '',
+      difficulty: 2,
+      trainingMode: false,
+    },
+  });
+
+  const { handleSubmit, control, formState: { errors, isSubmitting } } = form;
 
   // Handle form submission
-  function onSubmit(data: SettingsFormValues) {
+  const onSubmit = async (data: SettingsFormValues) => {
+    console.log("Form submitted:", data); // Debug log
+
+    if (!user) {
+      console.error("User is not authenticated");
+      return;
+    }
+
+    try {
+      await updateSettings({
+        clerkId: user.id as string,
+        language: data.language,
+        voice: data.voice,
+        difficulty: data.difficulty,
+        trainingMode: data.trainingMode,
+      });
+      toast({
+        title: 'Settings updated successfully',
+      });
+    } catch (error) {
+      console.error("Failed to update settings:", error);
+      toast({
+        title: 'Error',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const onError = (errors: any) => {
+    console.log("Form errors:", errors); // Debug log for errors
     toast({
-      title: "Settings Updated",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-  }
+      title: 'Form submission error',
+      description: 'Please check your input and try again.',
+      variant: 'destructive',
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,35 +98,68 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
           <Separator />
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <Card>
+          <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-8">
+            <Card>
+              <CardHeader>
+                <h3 className="text-lg font-medium">Language</h3>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={control}
+                  name="language"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="en">English</SelectItem>
+                            <SelectItem value="es">Español</SelectItem>
+                            <SelectItem value="fr">Français</SelectItem>
+                            <SelectItem value="de">Deutsch</SelectItem>
+                            <SelectItem value="zh">中文</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormDescription>
+                        Select your preferred language.
+                      </FormDescription>
+                      <FormMessage>{errors.language?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            <Card>
               <CardHeader>
                 <h3 className="text-lg font-medium">Voice</h3>
               </CardHeader>
               <CardContent>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="voice"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Select 
-                          value={field.value} 
-                          onValueChange={(value) => field.onChange(value)}
-                        >
-                          <SelectTrigger className="w-full">{field.value}</SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Default">Default</SelectItem>
-                            <SelectItem value="Voice 1">Voice 1</SelectItem>
-                            <SelectItem value="Voice 2">Voice 2</SelectItem>
-                            {/* Add more voices if needed */}
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select voice" />
+                          </SelectTrigger>                          <SelectContent>
+                            <SelectItem value="alloy">Alloy</SelectItem>
+                            <SelectItem value="echo">Echo</SelectItem>
+                            <SelectItem value="fable">Fable</SelectItem>
+                            <SelectItem value="onyx">Onyx</SelectItem>
+                            <SelectItem value="nova">Nova</SelectItem>
+                            <SelectItem value="shimmer">Shimmer</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
                       <FormDescription>
                         Select the voice for the application.
                       </FormDescription>
-                      <FormMessage />
+                      <FormMessage>{errors.voice?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -102,7 +171,7 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
               </CardHeader>
               <CardContent>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="difficulty"
                   render={({ field }) => (
                     <FormItem>
@@ -114,13 +183,12 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
                           value={[field.value]}
                           onValueChange={(value) => field.onChange(value[0])}
                           defaultValue={[2]} // Default difficulty
-                        >
-                        </Slider>
+                        />
                       </FormControl>
                       <FormDescription>
                         Adjust the difficulty level.
                       </FormDescription>
-                      <FormMessage />
+                      <FormMessage>{errors.difficulty?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -132,7 +200,7 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
               </CardHeader>
               <CardContent>
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="trainingMode"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
@@ -145,16 +213,18 @@ export function SettingsDialog({ open, onOpenChange }: { open: boolean; onOpenCh
                       <FormControl>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage>{errors.trainingMode?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
               </CardContent>
             </Card>
-            <Button type="submit">Update Settings</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Save Settings'}
+            </Button>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
