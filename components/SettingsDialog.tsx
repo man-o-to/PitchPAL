@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,7 +13,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { toast, useToast } from "@/components/ui/use-toast";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@radix-ui/react-separator";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { api } from "@/convex/_generated/api";
 
@@ -36,6 +37,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
   const { toast } = useToast();
 
   const updateSettings = useMutation(api.settings.updateSettings);
+  const getUserSettings = useQuery(api.settings.getUserSettings, { clerkId: user?.id! });
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsFormSchema),
@@ -47,12 +49,21 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
     },
   });
 
-  const { handleSubmit, control, formState: { errors, isSubmitting } } = form;
+  const { handleSubmit, control, formState: { errors, isSubmitting }, reset } = form;
+
+  useEffect(() => {
+    if (getUserSettings) {
+      reset({
+        language: getUserSettings.language || '',
+        voice: getUserSettings.voice || '',
+        difficulty: getUserSettings.difficulty || 2,
+        trainingMode: getUserSettings.trainingMode || false,
+      });
+    }
+  }, [getUserSettings, reset]);
 
   // Handle form submission
   const onSubmit = async (data: SettingsFormValues) => {
-    console.log("Form submitted:", data); // Debug log
-
     if (!user) {
       console.error("User is not authenticated");
       return;
@@ -145,8 +156,9 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                       <FormControl>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select voice" />
-                          </SelectTrigger>                          <SelectContent>
+                            <SelectValue placeholder="Select voice" />
+                          </SelectTrigger>
+                          <SelectContent>
                             <SelectItem value="alloy">Alloy</SelectItem>
                             <SelectItem value="echo">Echo</SelectItem>
                             <SelectItem value="fable">Fable</SelectItem>
