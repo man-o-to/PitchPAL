@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Inter } from 'next/font/google';
 import "./globals.css";
 
-import { ThemeProvider } from "@/components/theme-provider"
 import ConvexClerkProvider from "./providers/ConvexClerkProvider";
+
+// Load Inter font
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "Pitch-Pal",
@@ -18,17 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={GeistSans.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ConvexClerkProvider>
-            {children}
-          </ConvexClerkProvider>
-        </ThemeProvider>
+      <body className={inter.className}>
+        <ConvexClerkProvider>
+          {children}
+        </ConvexClerkProvider>
       </body>
     </html>
   );

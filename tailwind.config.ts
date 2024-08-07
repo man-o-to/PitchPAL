@@ -52,6 +52,7 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "orangeUI":"#DD6031",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -71,6 +72,11 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      spacing: {
+        '15': '60px',
+        '17': '68px',
+        '80': '320px',
       },
     },
   },
