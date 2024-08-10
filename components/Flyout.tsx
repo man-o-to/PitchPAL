@@ -43,14 +43,14 @@ export default function Flyout({ isOpen, onClose, toggleFlyout }: FlyoutProps) {
           <div className="flex justify-between items-center mb-3">
             <button
               onClick={onClose}
-              className={`${buttonClasses} w-auto h-auto`}
+              className="flex items-center gap-3 text-[#ECECF1] hover:bg-[#242F40] transition-colors px-4 py-2 rounded h-[42px]"
             >
               <Columns2 className="h-6 w-6" />
               <span className="sr-only">Close</span>
             </button>
             <button
               onClick={() => console.log('New Chat')}
-              className={`${buttonClasses} w-auto h-auto`}
+              className="flex items-center gap-3 text-[#ECECF1] hover:bg-[#242F40] transition-colors px-4 py-2 rounded h-[42px]"
             >
               <SquarePlus className="h-6 w-6" />
               <span className="sr-only">New Chat</span>
