@@ -1,7 +1,8 @@
-"use client";
+"use client"
 
 import Flyout from "@/components/Flyout";
 import Navbar from "@/components/Navbar";
+import AIStateIndicator from "@/components/AIStateIndicator";
 import { useState } from "react";
 
 export default function RootLayout({
@@ -16,7 +17,7 @@ export default function RootLayout({
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen relative">
       <Flyout isOpen={isFlyoutOpen} onClose={toggleFlyout} toggleFlyout={toggleFlyout} />
       <div
         className={`flex-1 transition-all duration-300 ${

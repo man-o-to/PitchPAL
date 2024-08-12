@@ -1,18 +1,29 @@
+// pages/index.tsx
 "use client";
 
-import AIStateIndicator from "@/components/AIStateIndicator";
-import EndCallButton from "@/components/EndCall";
-import HintCards from "@/components/HintCards";
-import ObjectionText from "@/components/ObjectionText";
-import ProgressBar from "@/components/ProgressBar";
+import Active from "@/components/views/Active";
+import Ready from "@/components/views/Ready";
+import { useState } from "react";
+
 
 export default function Home() {
+  const [isActive, setIsActive] = useState(false);
+
+  const handleStart = () => {
+    setIsActive(true);
+  };
+
+  const handleEndCall = () => {
+    setIsActive(false);
+  };
+
   return (
     <div className="relative">
-      <ObjectionText />
-      <HintCards />
-      <ProgressBar />
-      <EndCallButton />
+      {isActive ? (
+        <Active onEndCall={handleEndCall} />
+      ) : (
+        <Ready onStart={handleStart} />
+      )}
     </div>
   );
 }

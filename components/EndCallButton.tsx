@@ -1,14 +1,15 @@
-import { FC } from "react";
+// components/EndCall.tsx
+"use client";
 
-const EndCallButton: FC<{ onClick: () => void }> = ({ onClick }) => {
+import { Button } from "./ui/button";
+
+export default function EndCallButton({ onEndCall }: { onEndCall: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="p-2 px-4 bg-red-500 text-white rounded-lg"
+    <Button
+      onClick={onEndCall} // Trigger the end call action
+      className="px-4 py-2 text-white font-normal text-xl bg-orangeUI rounded-3xl w-[150px] h-[50px]"
     >
       End Call
-    </button>
+    </Button>
   );
-};
-
-export default EndCallButton;
+}
