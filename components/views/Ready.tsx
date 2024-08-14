@@ -37,7 +37,7 @@ export default function Ready({ onStart }: { onStart: () => void }) {
         </Button>
       </div>
       {microphoneAccess === false && (
-        <p className="mt-4 text-red-500">Unable to access the microphone. Please check your permissions.</p>
+        <p className="mt-4 text-red-500">Unable to access the microphone. Please check if it is properly connected.</p>
       )}
     </div>
   );
