@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Pitch-Pal",
+  title: "PitchPAL",
   description: "AI-powered sales training assistant for mastering cold calls",
 };
 

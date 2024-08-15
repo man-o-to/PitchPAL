@@ -1,3 +1,4 @@
+// convex/schema.ts
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
@@ -37,5 +38,10 @@ export default defineSchema({
     timestamp: v.number(), // Timestamp
     objectionId: v.optional(v.id('objections')), // Reference to the objection (if applicable)
     correct: v.boolean(), // Whether the response was correct
+  }),
+  // Add a table for storing temp files
+  storage: defineTable({
+    audioStorageId: v.optional(v.id('_storage')), // Path to the temporary file
+    createdAt: v.number(), // Timestamp
   }),
 });
