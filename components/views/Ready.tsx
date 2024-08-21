@@ -4,18 +4,33 @@
 import { useState } from "react";
 import AIStateIndicator from "@/components/AIStateIndicator";
 import { Button } from "../ui/button";
+import { api } from "@/convex/_generated/api";
+import { useMutation } from "convex/react";
+import { useUser } from "@clerk/nextjs";
+import { Id } from "@/convex/_generated/dataModel";
 
-export default function Ready({ onStart }: { onStart: () => void }) {
+export default function Ready({ onStart }: { onStart: (conversationId: Id<'conversations'>) => void }) {
+  const { user } = useUser();
   const [microphoneAccess, setMicrophoneAccess] = useState<boolean | null>(null);
+  const createConversation = useMutation(api.conversations.createConversation);
 
   const handleStart = async () => {
+    if (!user) {
+      console.error("User is not logged in.");
+      return;
+    }
+
     try {
       // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setMicrophoneAccess(true);
 
-      // Pass the stream or set it to state if needed
-      onStart(); // Transition to the Active component
+      // Create a new conversation
+      const newConversationId = await createConversation({ clerkId: user.id });
+      console.log("New Conversation ID:", newConversationId);
+
+      // Pass the conversationId to the parent component
+      onStart(newConversationId);
     } catch (error) {
       console.error("Error accessing microphone:", error);
       setMicrophoneAccess(false);
@@ -30,7 +45,7 @@ export default function Ready({ onStart }: { onStart: () => void }) {
       </div>
       <div>
         <Button
-          onClick={handleStart} // Trigger the start action with microphone access check
+          onClick={handleStart}
           className="bg-[#DD6031] rounded-full w-[145px] h-[50px] font-normal text-xl"
         >
           Start

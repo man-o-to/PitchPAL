@@ -14,8 +14,10 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as conversations from "../conversations.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as messages from "../messages.js";
 import type * as openai from "../openai.js";
 import type * as settings from "../settings.js";
 import type * as storage from "../storage.js";
@@ -30,8 +32,10 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  conversations: typeof conversations;
   files: typeof files;
   http: typeof http;
+  messages: typeof messages;
   openai: typeof openai;
   settings: typeof settings;
   storage: typeof storage;

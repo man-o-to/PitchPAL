@@ -1,5 +1,6 @@
 // components/GenerateAudio.tsx
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useAction, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { v4 as uuidv4 } from "uuid";
@@ -40,7 +41,7 @@ const useGenerateAudio = ({
     try {
       const response = await getAiAudio({
         voice: 'alloy',
-        input: transcription // Use transcription from props
+        input: transcription
       });
 
       const blob = new Blob([response], { type: 'audio/mpeg' });
@@ -68,29 +69,29 @@ const useGenerateAudio = ({
     }
   };
 
+  // Automatically trigger audio generation when transcription changes
+  useEffect(() => {
+    if (transcription) {
+      generateAiAudio();
+    }
+  }, [transcription]);
+
   return { isGenerating, generateAiAudio };
 };
 
 const GenerateAudio = (props: GenerateAudioProps) => {
-  const { isGenerating, generateAiAudio } = useGenerateAudio(props);
+  const { isGenerating } = useGenerateAudio(props);
 
   return (
     <div>
-      <button onClick={generateAiAudio} disabled={isGenerating || !props.transcription}>
-        {isGenerating ? (
-            'Generating...'
-        ) : (
-            'Generate'
-        )}
-      </button>
       {props.audio && (
-          <audio 
-            controls
-            src={props.audio}
-            autoPlay
-            className="mt-5"
-          />
-        )}
+        <audio 
+          controls
+          src={props.audio}
+          autoPlay
+          className="mt-5"
+        />
+      )}
     </div>
   );
 };

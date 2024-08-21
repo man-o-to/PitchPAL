@@ -36,7 +36,7 @@ export default defineSchema({
     sender: v.string(), // 'user' or 'bot'
     text: v.string(),
     timestamp: v.number(), // Timestamp
-    objectionId: v.optional(v.id('objections')), // Reference to the objection (if applicable)
+    // objectionId: v.optional(v.id('objections')), // Reference to the objection (if applicable)
     correct: v.boolean(), // Whether the response was correct
   }),
   // Add a table for storing temp files
