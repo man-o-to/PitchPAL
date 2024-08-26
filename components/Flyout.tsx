@@ -41,19 +41,15 @@ export default function Flyout({ isOpen, onClose, toggleFlyout }: FlyoutProps) {
         {/* Top Section */}
         <div className="flex flex-col gap-3 mb-3">
           <div className="flex justify-between items-center mb-3">
+            <div className="flex items-center gap-3 text-[#ECECF1] px-4 py-2 h-[42px]">
+              <h3>PitchPAL</h3>
+            </div>
             <button
               onClick={onClose}
               className="flex items-center gap-3 text-[#ECECF1] hover:bg-[#242F40] transition-colors px-4 py-2 rounded h-[42px]"
             >
               <Columns2 className="h-6 w-6" />
               <span className="sr-only">Close</span>
-            </button>
-            <button
-              onClick={() => console.log('New Chat')}
-              className="flex items-center gap-3 text-[#ECECF1] hover:bg-[#242F40] transition-colors px-4 py-2 rounded h-[42px]"
-            >
-              <SquarePlus className="h-6 w-6" />
-              <span className="sr-only">New Chat</span>
             </button>
           </div>
           <a

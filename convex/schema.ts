@@ -22,7 +22,7 @@ export default defineSchema({
     responses: v.array(v.string()), // Array of responses to overcome the objection
     hints: v.array(v.string()), // Array of hints for the correct responses
     difficulty: v.number(), // Difficulty level
-  }),
+  }).index('by_difficulty', ['difficulty']), // Create an index on difficulty
   settings: defineTable({
     clerkId: v.string(), // Reference to the user’s clerkId
     language: v.string(), // User-selected language
@@ -30,6 +30,23 @@ export default defineSchema({
     difficulty: v.number(), // User-selected difficulty level
     trainingMode: v.boolean(), // User-selected training mode
     createdAt: v.number(), // Timestamp
+  }),
+  accountSettings: defineTable({
+    clerkId: v.string(), // Reference to the user’s clerkId
+    language: v.string(), // Preferred language
+    theme: v.string(), // Theme ('Light', 'Dark', 'System')
+    emailNotifications: v.boolean(), // Email notifications preference
+    pushNotifications: v.boolean(), // Push notifications preference
+    dataSharing: v.boolean(), // Data sharing preference
+    timezone: v.string(), // Timezone
+    multiFactorAuth: v.boolean(), // Multi-factor authentication status
+    subscriptionPlan: v.string(), // Subscription plan
+    paymentInfo: v.object({ // Payment information
+      cardNumber: v.string(), // Card number
+      expiryDate: v.string(), // Expiry date
+      cvv: v.string(), // CVV
+      billingAddress: v.string(), // Billing address
+    }),
   }),
   messages: defineTable({
     conversationId: v.id('conversations'), // Reference to the conversation

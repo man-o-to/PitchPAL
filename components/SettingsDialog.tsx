@@ -1,3 +1,5 @@
+// components/SettingsDialog.tsx
+
 "use client";
 
 import { useEffect } from "react";

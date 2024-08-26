@@ -18,6 +18,7 @@ import type * as conversations from "../conversations.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
 import type * as messages from "../messages.js";
+import type * as objections from "../objections.js";
 import type * as openai from "../openai.js";
 import type * as settings from "../settings.js";
 import type * as storage from "../storage.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   files: typeof files;
   http: typeof http;
   messages: typeof messages;
+  objections: typeof objections;
   openai: typeof openai;
   settings: typeof settings;
   storage: typeof storage;

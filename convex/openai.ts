@@ -61,7 +61,20 @@ export const getConversationResponse = action({
         messages: messages,
       });
 
-      return completion.choices[0].message?.content || "No response.";
+      // Get the AI response
+      const aiResponse = completion.choices[0].message?.content || "No response.";
+
+      // Extract the objection ID and the objection text
+      const objectionIdMatch = aiResponse.match(/#\[(\w+)\]/);
+      const objectionId = objectionIdMatch ? objectionIdMatch[1] : null;
+
+      // Strip out the objection ID from the response text
+      const parsedResponse = aiResponse.replace(/#\[\w+\]\s*/, '');
+
+      return {
+        parsedResponse,
+        objectionId,
+      };
     } catch (error) {
       console.error("Error communicating with OpenAI", error);
       throw new Error("Failed to get AI response.");

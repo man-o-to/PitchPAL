@@ -1,4 +1,5 @@
 // components/Active.tsx
+
 "use client";
 
 import React, { useState, useCallback } from "react";
@@ -23,12 +24,18 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
   const [audioStorageId, setAudioStorageId] = useState<Id<"_storage"> | null>(null);
   const [transcribedText, setTranscribedText] = useState<string | null>(null);
   const [aiResponse, setAiResponse] = useState<string | null>(null);
+  const [hints, setHints] = useState<string[]>([]); // State to store the hints
+  const [objectionText, setObjectionText] = useState<string | null>(null); // State to store the objection text
+
 
   const sendMessage = useMutation(api.messages.sendMessage);
   const getAiResponse = useAction(api.openai.getConversationResponse);
+  const getHintsByObjectionId = useMutation(api.objections.getHintsByObjectionId);
+  const getObjectionText = useMutation(api.objections.getObjectionText);
 
   // Fetch messages only if conversationId is available
   const listMessagesQuery = useQuery(api.messages.listMessages, { conversationId });
+
 
   const handleSendMessage = useCallback(async (text: string, sender: 'user' | 'assistant') => {
     try {
@@ -51,24 +58,37 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
           role: message.sender === 'user' ? 'user' : 'assistant',
           content: message.text,
         }));
-
+  
         // Add the new transcription to the history
         messagesForOpenAI.push({ role: 'user', content: transcription });
-
+  
         // Get AI response using the conversation API
-        const response = await getAiResponse({ input: transcription, messages: messagesForOpenAI });
-        setAiResponse(response);
+        const { parsedResponse, objectionId } = await getAiResponse({ input: transcription, messages: messagesForOpenAI });
+        setAiResponse(parsedResponse);
+  
+        // Optionally, store or use the objectionId as needed
+        if (objectionId) {
+          console.log("Objection ID:", objectionId);
+          
+          // Fetch the hints associated with the objectionId
+          const hintsForObjection = await getHintsByObjectionId({ objectionId: objectionId as Id<"objections"> });
+          setHints(hintsForObjection);
 
+          // Fetch the objection text to display
+          const objection = await getObjectionText({ objectionId: objectionId as Id<"objections"> });
+          setObjectionText(objection);
+        }
+  
         // Send the transcribed message to the conversation
         await handleSendMessage(transcription, 'user');
-
-        // Send the AI's response as a message
-        await handleSendMessage(response, 'assistant');
+  
+        // Send the AI's parsed response as a message
+        await handleSendMessage(parsedResponse, 'assistant');
       } catch (error) {
         console.error("Error handling conversation:", error);
       }
     }
-  }, [conversationId, getAiResponse, handleSendMessage, listMessagesQuery]);
+  }, [conversationId, getAiResponse, handleSendMessage, listMessagesQuery, getHintsByObjectionId]);
 
   console.log("Rendering Active component");
 
@@ -87,8 +107,8 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
         audio={audioUrl}
         transcription={aiResponse}
       />
-      <ObjectionText />
-      <HintCards />
+      <ObjectionText text={objectionText} />
+      <HintCards hints={hints} />
       <ProgressBar />
       <EndCallButton onEndCall={onEndCall} />
     </div>
