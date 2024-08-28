@@ -27,7 +27,6 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
   const [hints, setHints] = useState<string[]>([]); // State to store the hints
   const [objectionText, setObjectionText] = useState<string | null>(null); // State to store the objection text
 
-
   const sendMessage = useMutation(api.messages.sendMessage);
   const getAiResponse = useAction(api.openai.getConversationResponse);
   const getHintsByObjectionId = useMutation(api.objections.getHintsByObjectionId);
@@ -35,7 +34,6 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
 
   // Fetch messages only if conversationId is available
   const listMessagesQuery = useQuery(api.messages.listMessages, { conversationId });
-
 
   const handleSendMessage = useCallback(async (text: string, sender: 'user' | 'assistant') => {
     try {
@@ -58,18 +56,18 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
           role: message.sender === 'user' ? 'user' : 'assistant',
           content: message.text,
         }));
-  
+
         // Add the new transcription to the history
         messagesForOpenAI.push({ role: 'user', content: transcription });
-  
+
         // Get AI response using the conversation API
         const { parsedResponse, objectionId } = await getAiResponse({ input: transcription, messages: messagesForOpenAI });
         setAiResponse(parsedResponse);
-  
-        // Optionally, store or use the objectionId as needed
+
+        // Store/use the objectionId as needed
         if (objectionId) {
           console.log("Objection ID:", objectionId);
-          
+
           // Fetch the hints associated with the objectionId
           const hintsForObjection = await getHintsByObjectionId({ objectionId: objectionId as Id<"objections"> });
           setHints(hintsForObjection);
@@ -78,10 +76,10 @@ const Active = ({ conversationId, onEndCall }: ActiveProps) => {
           const objection = await getObjectionText({ objectionId: objectionId as Id<"objections"> });
           setObjectionText(objection);
         }
-  
+
         // Send the transcribed message to the conversation
         await handleSendMessage(transcription, 'user');
-  
+
         // Send the AI's parsed response as a message
         await handleSendMessage(parsedResponse, 'assistant');
       } catch (error) {
