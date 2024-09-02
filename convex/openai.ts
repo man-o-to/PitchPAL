@@ -4,6 +4,7 @@ import { v } from "convex/values";
 import OpenAI, { toFile } from "openai";
 import { SpeechCreateParams } from "openai/resources/audio/speech.mjs";
 import * as base64 from 'base64-js';
+import { internal } from "./_generated/api";
 
 
 const openai = new OpenAI({
@@ -78,6 +79,41 @@ export const getConversationResponse = action({
     } catch (error) {
       console.error("Error communicating with OpenAI", error);
       throw new Error("Failed to get AI response.");
+    }
+  },
+});
+
+export const compareResponses = action({
+  args: { userResponse: v.string(), objectionId: v.id("objections") },
+  handler: async (ctx, { userResponse, objectionId }) => {
+    try {
+      // Fetch the objection from the database
+      const objection = await ctx.runQuery(internal.objections.getObjectionById, { objectionId });
+      if (!objection) {
+        throw new Error("Objection not found.");
+      }
+
+      const prompt = `
+      Compare the following user response with the predefined objection responses.
+      User response: "${userResponse}"
+      Objection responses: "${objection.responses.join(", ")}"
+      Return nothing but a similarity score from -10 to 10, where 10 means very similar and -10 means not similar at all.
+      `;
+      
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "system", content: prompt }],
+        temperature: 0.2,
+      });
+
+      // Extract the score from the completion response
+      const score = parseFloat(completion.choices[0].message?.content || "0");
+
+      console.log(`Similarity score: ${score}`);
+      return { score };
+    } catch (error) {
+      console.error("Error comparing responses:", error);
+      throw new Error("Failed to compare responses.");
     }
   },
 });

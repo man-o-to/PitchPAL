@@ -3,6 +3,26 @@
 import { internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
+// Query to get objection by id
+export const getObjectionById = internalQuery({
+  args: { objectionId: v.id("objections") },
+  handler: async (ctx, { objectionId }) => {
+    // Fetch the objection by ID
+    return await ctx.db.get(objectionId);
+  },
+});
+
+// Query to get the number of objections based on difficulty
+export const getNumberOfObjectionsByDifficulty = internalQuery({
+  args: { difficulty: v.number() },
+  handler: async (ctx, { difficulty }) => {
+    const objections = await ctx.db.query('objections')
+      .withIndex('by_difficulty', q => q.lte('difficulty', difficulty))
+      .collect();
+      return objections.length;
+  },
+});
+
 // Function to fetch and format objections
 export const getFormattedObjections = internalQuery({
   args: { difficulty: v.number() }, // Accept difficulty level as an argument

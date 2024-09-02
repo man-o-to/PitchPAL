@@ -1,18 +1,20 @@
 // components/Ready.tsx
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AIStateIndicator from "@/components/AIStateIndicator";
 import { Button } from "../ui/button";
 import { api } from "@/convex/_generated/api";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { Id } from "@/convex/_generated/dataModel";
 
-export default function Ready({ onStart }: { onStart: (conversationId: Id<'conversations'>) => void }) {
+export default function Ready({ onStart }: { onStart: (conversationId: Id<'conversations'>, progressData: ProgressData) => void }) {
   const { user } = useUser();
   const [microphoneAccess, setMicrophoneAccess] = useState<boolean | null>(null);
   const createConversation = useMutation(api.conversations.createConversation);
+  const progressData = useMutation(api.feedback.getProgressNumbers);
 
   const handleStart = async () => {
     if (!user) {
@@ -29,8 +31,14 @@ export default function Ready({ onStart }: { onStart: (conversationId: Id<'conve
       const newConversationId = await createConversation({ clerkId: user.id });
       console.log("New Conversation ID:", newConversationId);
 
-      // Pass the conversationId to the parent component
-      onStart(newConversationId);
+      // Create a new progressDate
+      const newProgressData = await progressData({ clerkId: user.id });
+      console.log("New Progress Data:", newProgressData);
+
+      // Pass the conversationId and progressData to the parent component
+      if (newProgressData && newConversationId) {
+        onStart(newConversationId, newProgressData);
+      }
     } catch (error) {
       console.error("Error accessing microphone:", error);
       setMicrophoneAccess(false);
@@ -56,4 +64,10 @@ export default function Ready({ onStart }: { onStart: (conversationId: Id<'conve
       )}
     </div>
   );
+}
+
+interface ProgressData {
+  numberOfObjections: number;
+  maxScore: number;
+  passingScore: number;
 }

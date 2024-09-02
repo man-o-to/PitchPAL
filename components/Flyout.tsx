@@ -20,7 +20,7 @@ interface FlyoutProps {
   toggleFlyout: () => void;
 }
 
-const buttonClasses = "flex items-center gap-3 text-[#ECECF1] hover:bg-[#242F40] transition-colors px-4 py-2 rounded text-medium text-[14px]/[16px] w-full h-[42px] text-left";
+const buttonClasses = "flex items-center gap-3 text-[#363636] hover:bg-[#363636] hover:bg-opacity-10 transition-colors px-4 py-2 rounded text-medium text-[14px]/[16px] w-full h-[42px] text-left";
 
 export default function Flyout({ isOpen, onClose, toggleFlyout }: FlyoutProps) {
   const groupedConversations = conversations.reduce((acc, conv) => {
@@ -32,7 +32,7 @@ export default function Flyout({ isOpen, onClose, toggleFlyout }: FlyoutProps) {
 
   return (
     <div
-      className={`fixed left-0 top-0 h-full bg-[#363636] text-[#ECECF1] shadow-lg transform transition-transform duration-300 ${
+      className={`fixed left-0 top-0 h-full bg-white text-[#363636] transform border-r border-[#363636] border-opacity-20 transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } z-50`}
       style={{ width: "300px" }}
@@ -41,12 +41,12 @@ export default function Flyout({ isOpen, onClose, toggleFlyout }: FlyoutProps) {
         {/* Top Section */}
         <div className="flex flex-col gap-3 mb-3">
           <div className="flex justify-between items-center mb-3">
-            <div className="flex items-center gap-3 text-[#ECECF1] px-4 py-2 h-[42px]">
+            <div className="flex items-center gap-3 text-[#363636] font-semibold px-4 py-2 h-[42px]">
               <h3>PitchPAL</h3>
             </div>
             <button
               onClick={onClose}
-              className="flex items-center gap-3 text-[#ECECF1] hover:bg-[#242F40] transition-colors px-4 py-2 rounded h-[42px]"
+              className="flex items-center gap-3 text-[#363636] hover:bg-[#363636] hover:bg-opacity-20 transition-colors px-4 py-2 rounded h-[42px]"
             >
               <Columns2 className="h-6 w-6" />
               <span className="sr-only">Close</span>

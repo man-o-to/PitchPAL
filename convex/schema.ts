@@ -1,5 +1,6 @@
 // convex/schema.ts
 import { defineSchema, defineTable } from 'convex/server';
+import { migrationsTable } from "convex-helpers/server/migrations";
 import { v } from 'convex/values';
 
 export default defineSchema({
@@ -61,4 +62,5 @@ export default defineSchema({
     audioStorageId: v.optional(v.id('_storage')), // Path to the temporary file
     createdAt: v.number(), // Timestamp
   }),
+  migrations: migrationsTable,
 });
